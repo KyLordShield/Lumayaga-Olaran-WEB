@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact - SkillUp Arcade</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      color: #f2f2f2;
+      background-color: #121212;
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color: #121212;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #292929;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 2em;
+      color: #00ffc3;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    nav a {
+      color: #f2f2f2;
+      margin: 0 15px;
+      text-decoration: none;
+      font-size: 1em;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #00ffc3;
+    }
+
+    main {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #00ffc3;
+      text-align: center;
+    }
+
+    .contact-info {
+      background-color: #1a1a1a;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0, 255, 195, 0.2);
+    }
+
+    .contact-info p {
+      font-size: 1.1em;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .contact-info strong {
+      color: #00ffc3;
+    }
+
+    .back-button {
+      background-color: #1f1f1f;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+
+    .back-button:hover {
+      background-color: #00ffc3;
+    }
+
+    footer {
+      background-color: #121212;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 2px solid #292929;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">SkillUp Arcade</div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="MenuAllGames.html">Games</a>
+        <a href="MenuAboutPage.html">About</a>
+        <a href="MenuContacts.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Contact Us</h2>
+    <div class="contact-info">
+      <p><strong>Francis Kyle Lumayaga</strong><br>
+         Email: <a href="mailto:lumayagafrancis@gmail.com" style="color:#00ffc3;">lumayagafrancis@gmail.com</a></p>
+
+      <p><strong>Patrich Olaran</strong><br>
+         Email: <a href="mailto:OlaranPatrich@gmail.com" style="color:#00ffc3;">OlaranPatrich@gmail.com</a></p>
+
+      <p><strong>Location:</strong><br>
+         Somewhere in the Philippines.... Always online and ready to level up the world, one game at a time!</p>
+
+      <p><strong>Support Hours:</strong><br>
+         Monday to Friday, 9 AM – 5 PM (PHT)</p>
+
+      <p><strong>Want to collaborate or report a bug?</strong><br>
+         Just shoot us an email. We’re friendly devs who love feedback, men, and fixing broken code.</p>
+    </div>
+
+    <a href="index.html" class="back-button">Back to Home</a>
+  </main>
+
+  <footer>
+    &copy; 2025 SkillUp Arcade. Learn by playing. Built for curious minds.
+  </footer>
+
+</body>
+</html>

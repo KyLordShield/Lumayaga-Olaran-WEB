@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Typing Door Game - Multiple Doors</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      overflow: hidden;
+      height: 100%;
+      font-family: 'Press Start 2P', cursive;
+      color: white;
+    }
+
+    body {
+      background-image: url('https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 20px 10px;
+      min-height: 100vh;
+    }
+
+    #start-screen, #countdown, #game, #end-message {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .button {
+      padding: 15px 30px;
+      font-size: 20px;
+      margin: 10px;
+      cursor: pointer;
+      background: #222;
+      color: white;
+      border: 2px solid #0ff;
+      border-radius: 10px;
+      transition: background 0.3s;
+      user-select: none;
+      touch-action: manipulation;
+      min-width: 140px;
+    }
+
+    .button:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+    .doors-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      width: 100%;
+      margin-bottom: 120px;
+      min-height: 300px;
+    }
+
+    .door {
+      position: relative;
+      flex: 1 1 calc(20% - 20px);
+      max-width: 160px;
+      height: 280px;
+      background: linear-gradient(to bottom, #0d3c61, #001b3a);
+      border: 5px solid #0ff;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #0ff inset;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      box-sizing: border-box;
+      text-align: center;
+      user-select: none;
+      transition: transform 0.6s ease, opacity 0.6s ease, box-shadow 0.3s ease;
+    }
+
+    .door.vanished {
+      transform: scale(0.3) rotateY(90deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .door.active {
+      box-shadow: 0 0 20px 6px #0f0 inset;
+      transform: scale(1.05);
+      z-index: 2;
+    }
+
+    .phrase {
+      font-size: 18px;
+      line-height: 1.4;
+      color: white;
+      margin-top: 10px;
+      user-select: none;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .letter.correct { color: #0f0; }
+    .letter.incorrect { color: #f00; }
+    .letter { user-select: none; }
+
+    .door-number {
+      font-size: 22px;
+      font-weight: bold;
+      color: #0ff;
+      user-select: none;
+    }
+
+    .input-area {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 900px;
+      text-align: center;
+      box-sizing: border-box;
+      z-index: 20;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      font-size: 20px;
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+      font-family: 'Press Start 2P', cursive;
+      border-radius: 10px;
+      border: 2px solid #0ff;
+      background: #111;
+      color: white;
+      outline: none;
+      user-select: text;
+      box-shadow: 0 0 10px #0ff;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #0f0;
+      box-shadow: 0 0 15px #0f0;
+      background: #000;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #0ff;
+      user-select: none;
+    }
+
+    @media (max-width: 720px) {
+      .doors-container {
+        min-height: auto;
+        gap: 12px;
+        margin-bottom: 140px;
+      }
+
+      .door {
+        flex: 1 1 calc(50% - 12px);
+        max-width: none;
+        height: 180px;
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      input[type="text"] {
+        font-size: 18px;
+        padding: 10px;
+      }
+
+      .door-number {
+        font-size: 18px;
+      }
+
+      .phrase {
+        font-size: 16px;
+      }
+
+      #status {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .doors-container {
+        flex-direction: column;
+      }
+      .door {
+        flex: none;
+        width: 100%;
+        height: 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="start-screen">
+    <a href="index.html" class="button" style="position: absolute; top: 20px; left: 20px;">⬅ Back</a>
+    <h1>🚪🚀 Typing Door Game</h1>
+    <p>Select Difficulty:</p>
+    <button class="button" onclick="startCountdown('easy')">Easy</button>
+    <button class="button" onclick="startCountdown('normal')">Normal</button>
+    <button class="button" onclick="startCountdown('hard')">Hard</button>
+  </div>
+
+  <div id="countdown">
+    <h2>Get Ready!</h2>
+    <p id="count" style="user-select: none; cursor: pointer;">Click to Start</p>
+  </div>
+
+  <div id="game" aria-live="polite" aria-atomic="true" aria-relevant="additions">
+    <div class="doors-container" id="doors-container"></div>
+    <div class="input-area">
+      <input type="text" id="input" placeholder="Type the phrase for the highlighted door..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Type the phrase here"/>
+      <div id="status"></div>
+    </div>
+    <div id="overlay"></div>
+  </div>
+
+  <div id="end-message">
+    <h2 id="result-text"></h2>
+    <button class="button" onclick="goToStart()">Back to Start</button>
+  </div>
+
+  <script>
+    const phrases = {
+      easy: ["Abundance","Plenty","Accentuate","Emphasize","Acquiesce","Consent","Align","Position",],
+      normal: ["I love my parents.", "My dog loves to play.", "I like my school.", "I need to go to the restroom.", "I go to school.",
+      "May I come in?", "I comb my hair.", "Happy birthday to you!", "I tie my shoes.", "That is a pen. this one as well",],
+      hard: [
+        "She sells seashells by the seashore",
+        "Peter Piper picked a peck of pickled peppers",
+        "How much wood would a woodchuck chuck",
+        "The quick brown fox jumps over the lazy dog",
+        "Supercalifragilisticexpialidocious"
+      ]
+    };
+
+    let difficulty = '';
+    let doorCount = 5;
+    let doors = [];
+
+    let timeLeft = 0;
+    let interval;
+
+    const startScreen = document.getElementById('start-screen');
+    const countdownScreen = document.getElementById('countdown');
+    const countText = document.getElementById('count');
+    const gameScreen = document.getElementById('game');
+    const endScreen = document.getElementById('end-message');
+    const doorsContainer = document.getElementById('doors-container');
+    const inputEl = document.getElementById('input');
+    const statusEl = document.getElementById('status');
+    const overlayEl = document.getElementById('overlay');
+    const resultText = document.getElementById('result-text');
+
+    function showScreen(screenId) {
+      startScreen.style.display = 'none';
+      countdownScreen.style.display = 'none';
+      gameScreen.style.display = 'none';
+      endScreen.style.display = 'none';
+      document.getElementById(screenId).style.display = 'flex';
+    }
+
+    function showStart() {
+      showScreen('start-screen');
+    }
+
+    function startCountdown(mode) {
+      difficulty = mode;
+      showScreen('countdown');
+      countText.textContent = 'Click to Start';
+      countText.style.pointerEvents = 'auto';
+      countText.onclick = () => {
+        countText.style.pointerEvents = 'none';
+        let i = 3;
+        countText.textContent = i;
+        const countdown = setInterval(() => {
+          i--;
+          if (i < 0) {
+            clearInterval(countdown);
+            startGame();
+          } else {
+            countText.textContent = i;
+          }
+        }, 1000);
+      };
+    }
+
+    function setTimerForDifficulty() {
+      if (difficulty === 'easy') return 30;
+      if (difficulty === 'normal') return 20;
+      return 10;
+    }
+
+    function pickPhrases() {
+      const pool = [...phrases[difficulty]];
+      const selected = [];
+      while (selected.length < doorCount && pool.length > 0) {
+        const idx = Math.floor(Math.random() * pool.length);
+        selected.push(pool.splice(idx,1)[0]);
+      }
+      return selected;
+    }
+
+    function createDoorElement(door, index) {
+      const doorDiv = document.createElement('div');
+      doorDiv.classList.add('door');
+      doorDiv.setAttribute('data-index', index);
+      doorDiv.setAttribute('role', 'region');
+      doorDiv.setAttribute('aria-label', `Door number ${index + 1}, ${door.status === 'opened' ? 'opened' : 'closed'}`);
+      if (door.status === 'opened') doorDiv.classList.add('vanished');
+      if (index === currentDoorIndex && door.status === 'locked') doorDiv.classList.add('active');
+
+      const doorNum = document.createElement('div');
+      doorNum.classList.add('door-number');
+      doorNum.textContent = `Door ${index + 1}`;
+
+      const phraseDiv = document.createElement('div');
+      phraseDiv.classList.add('phrase');
+
+      phraseDiv.innerHTML = '';
+      [...door.phrase].forEach(char => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.classList.add('letter');
+        phraseDiv.appendChild(span);
+      });
+
+      doorDiv.appendChild(doorNum);
+      doorDiv.appendChild(phraseDiv);
+
+      return doorDiv;
+    }
+
+    function renderDoors() {
+      doorsContainer.innerHTML = '';
+      doors.forEach((door, idx) => {
+        doorsContainer.appendChild(createDoorElement(door, idx));
+      });
+    }
+
+    function updateStatus() {
+      statusEl.innerHTML = `Door ${currentDoorIndex + 1} of ${doorCount} - Time left: <span id="time">${timeLeft}</span>s`;
+    }
+
+    function updateTimer() {
+      const timeSpan = document.getElementById('time');
+      if (timeSpan) timeSpan.textContent = timeLeft;
+    }
+
+    function startTimer() {
+      clearInterval(interval);
+      interval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          gameOver("⏰ Time's up!");
+        }
+      }, 1000);
+    }
+
+    function highlightLetters(value) {
+      const doorDivs = document.querySelectorAll('.door');
+      doorDivs.forEach(div => {
+        const idx = parseInt(div.getAttribute('data-index'));
+        if (idx !== currentDoorIndex) return;
+        const door = doors[idx];
+        const letters = div.querySelectorAll('.letter');
+        letters.forEach((span, i) => {
+          if (i >= value.length) {
+            span.className = 'letter';
+          } else if (value[i] === span.textContent) {
+            span.className = 'letter correct';
+          } else {
+            span.className = 'letter incorrect';
+          }
+        });
+      });
+    }
+
+    function startGame() {
+      showScreen('game');
+    
+      doors = [];
+      const selectedPhrases = pickPhrases();
+      for(let i=0; i<doorCount; i++) {
+        doors.push({
+          phrase: selectedPhrases[i] || "No phrase",
+          status: 'locked'
+        });
+      }
+      currentDoorIndex = 0;
+      timeLeft = setTimerForDifficulty();
+      renderDoors();
+      updateStatus();
+      inputEl.value = '';
+      inputEl.focus();
+      startTimer();
+    }
+
+    inputEl.addEventListener('input', () => {
+      const value = inputEl.value;
+      if (doors[currentDoorIndex].status === 'opened') return;
+      highlightLetters(value);
+
+      if (value === doors[currentDoorIndex].phrase) {
+        clearInterval(interval);
+
+        doors[currentDoorIndex].status = 'opened';
+        renderDoors();
+
+        inputEl.value = '';
+        inputEl.blur();
+
+        overlayEl.classList.add('active');
+
+        setTimeout(() => {
+          overlayEl.classList.remove('active');
+          currentDoorIndex++;
+          if (currentDoorIndex >= doorCount) {
+            gameOver("🎉 You've opened all the doors!");
+          } else {
+            timeLeft = setTimerForDifficulty();
+            updateStatus();
+            renderDoors();
+            inputEl.focus();
+            startTimer();
+          }
+        }, 1000);
+      }
+    });
+
+    function gameOver(msg) {
+      clearInterval(interval);
+      inputEl.blur();
+      resultText.textContent = msg;
+      showScreen('end-message');
+    }
+
+    function goToStart() {
+      showStart();
+    }
+
+    showStart();
+  </script>
+
+  </body>
+  </html>
